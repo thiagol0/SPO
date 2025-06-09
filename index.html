@@ -5,37 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gerenciamento de Frota - SGF</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/86AAF7CD-A199-463A-BEEF-AEE7400B3F0D/main.js?attr=qphLt5ml840DjTFV1ZULsfsC8rBHcv_Y1KwiGMh46jCcJuVm2GlmQKgkVhel-GoK8HzaS6szxMRPxBLXRdfwuV7da2DSsqjIiVMrAG3aK5svotsE21MmJSKU4hIYriQc" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
-        .dark {
-            background-color: #1a202c;
-            color: #e2e8f0;
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .dark .bg-white { background-color: #2d3748; }
-        .dark .text-gray-900 { color: #e2e8f0; }
-        .dark .text-gray-600 { color: #a0aec0; }
-        .dark .border-gray-200 { border-color: #4a5568; }
-        .dark .bg-gray-50 { background-color: #2d3748; }
-        .dark .bg-gray-100 { background-color: #4a5568; }
-        .dark .bg-blue-50 { background-color: #2c5282; } /* Ajuste para modo escuro */
-        .dark .bg-green-50 { background-color: #2f855a; } /* Ajuste para modo escuro */
-        .dark .bg-red-50 { background-color: #c53030; } /* Ajuste para modo escuro */
-        .dark .border-blue-200 { border-color: #63b3ed; } /* Ajuste para modo escuro */
+        /* Basic dark mode compatibility, Tailwind's dark: prefix will handle most */
+        .dark .bg-white { background-color: #1f2937; /* gray-800 */ }
+        .dark .text-gray-900 { color: #f3f4f6; /* gray-100 */ }
+        .dark .text-gray-600, .dark .text-gray-500 { color: #9ca3af; /* gray-400 */ }
+        .dark .border-gray-200 { border-color: #374151; /* gray-700 */ }
+        .dark .bg-gray-50 { background-color: #374151; /* gray-700 */ }
+        .dark .bg-gray-100 { background-color: #1f2937; /* gray-800 */ }
+        .dark .border-b { border-color: #374151; /* gray-700 */ }
 
+        /* Specific color adjustments for dark mode based on original styles */
+        .dark .bg-blue-50 { background-color: #1e3a8a; } /* Darker blue */
+        .dark .text-blue-800 { color: #93c5fd; }
+        .dark .border-blue-200 { border-color: #60a5fa; }
+        .dark .text-blue-600 { color: #60a5fa; }
+        .dark .text-blue-300 { color: #bfdbfe; }
+        .dark .text-blue-400 { color: #93c5fd; }
+
+        .dark .bg-green-50 { background-color: #065f46; } /* Darker green */
+        .dark .text-green-800 { color: #6ee7b7; }
+        .dark .text-green-600 { color: #34d399; }
+        .dark .text-green-300 { color: #a7f3d0; }
+        .dark .text-green-400 { color: #6ee7b7; }
+
+        .dark .bg-red-50 { background-color: #991b1b; } /* Darker red */
+        .dark .text-red-800 { color: #fca5a5; }
+        .dark .text-red-600 { color: #f87171; }
+        .dark .text-red-300 { color: #fecaca; }
+        .dark .text-red-400 { color: #fca5a5; }
 
         .sortable-ghost {
             opacity: 0.4;
-            background: #f0f9ff;
+            background: #e0f2fe; /* light sky blue */
+        }
+        .dark .sortable-ghost {
+            background: #0c4a6e; /* darker sky blue */
         }
         
-        .conflict {
-            background-color: #fef2f2; /* Amarelo claro para conflito em modo claro */
-        }
-        
-        .dark .conflict {
-            background-color: #450a0a; /* Vermelho escuro para conflito em modo escuro */
+        .conflict-row {
+            /* Tailwind classes used directly */
         }
         
         .tooltip {
@@ -46,19 +62,23 @@
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 200px;
-            background-color: #555;
+            background-color: #374151; /* gray-700 */
             color: white;
             text-align: center;
             border-radius: 6px;
-            padding: 5px;
+            padding: 8px;
             position: absolute;
-            z-index: 1;
+            z-index: 50;
             bottom: 125%;
             left: 50%;
             margin-left: -100px;
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 12px;
+            font-size: 0.75rem; /* 12px */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .dark .tooltip .tooltiptext {
+             background-color: #4b5563; /* gray-600 */
         }
         
         .tooltip:hover .tooltiptext {
@@ -72,16 +92,23 @@
               print-color-adjust: exact;
             }
             .no-print { display: none !important; }
-            .print-table { font-size: 10px; width: 100%;}
-            .print-table th, .print-table td {
+            table.print-table { font-size: 10px; width: 100% !important; }
+            table.print-table th, table.print-table td {
                 padding: 4px 6px;
-                border: 1px solid #ccc;
+                border: 1px solid #ccc !important;
             }
-             main, #page-home, .overflow-x-auto, table {
+            main, .overflow-x-auto, table {
                 width: 100% !important;
                 overflow: visible !important;
             }
             .bg-white { background-color: white !important; color: black !important; }
+            /* Ensure dark mode styles are reverted for print */
+            .dark .bg-white { background-color: white !important; color: black !important; }
+            .dark body { background-color: white !important; color: black !important; }
+            .dark th, .dark td { color: black !important; border-color: #ccc !important; }
+            .dark .bg-gray-50 { background-color: #f9fafb !important; }
+            .dark .bg-gray-800 { background-color: white !important; }
+            .dark .text-gray-100, .dark .text-gray-200, .dark .text-gray-300, .dark .text-gray-400 { color: black !important;}
         }
 
         .page-transition {
@@ -89,107 +116,92 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .nav-active {
             background-color: rgba(59, 130, 246, 0.1); /* Azul claro com opacidade */
-            border-left: 3px solid #3b82f6; /* Borda azul */
+            border-left: 3px solid #3b82f6;
         }
         .dark .nav-active {
             background-color: rgba(96, 165, 250, 0.2); /* Azul mais claro para dark mode */
             border-left: 3px solid #60a5fa;
         }
 
-
         .breadcrumb-item:not(:last-child)::after {
             content: " > ";
-            color: #6b7280;
+            color: #6b7280; /* gray-500 */
             margin: 0 8px;
         }
         .dark .breadcrumb-item:not(:last-child)::after {
-            color: #a0aec0;
+            color: #9ca3af; /* gray-400 */
         }
-        .dark .text-blue-600 { color: #60a5fa; }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
-    "react/": "https://esm.sh/react@^19.1.0/"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-gray-100 min-h-screen transition-colors duration-300">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
     <!-- Header -->
     <header class="bg-blue-800 text-white shadow-lg sticky top-0 z-40 no-print">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <button id="homeButton" class="flex items-center space-x-3 hover:bg-blue-700 p-2 rounded transition-colors" title="Voltar ao Início">
-                        <i class="fas fa-car text-2xl"></i>
-                        <h1 class="text-2xl font-bold">Sistema de Gerenciamento de Frota</h1>
-                    </button>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <!-- Mobile Menu Button -->
-                    <button id="mobileMenuToggle" class="md:hidden p-2 rounded hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    
-                    <!-- Desktop Navigation -->
-                    <nav class="hidden md:flex items-center space-x-2">
-                        <button id="navHome" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="home">
+                <button id="homeButton" class="flex items-center space-x-3 hover:bg-blue-700 p-2 rounded transition-colors" title="Voltar ao Início">
+                    <i class="fas fa-car text-2xl"></i>
+                    <h1 class="text-xl sm:text-2xl font-bold">Sistema de Gerenciamento de Frota</h1>
+                </button>
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <nav id="desktopNav" class="hidden md:flex items-center space-x-1">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="home">
                             <i class="fas fa-home mr-1"></i>Início
                         </button>
-                        <button id="navConflicts" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="conflicts">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="conflicts">
                             <i class="fas fa-exclamation-triangle mr-1"></i>Conflitos
                         </button>
-                        <button id="navCalendar" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="calendar">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="calendar">
                             <i class="fas fa-calendar mr-1"></i>Calendário
                         </button>
-                        <button id="navStats" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="stats">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="stats">
                             <i class="fas fa-chart-bar mr-1"></i>Estatísticas
                         </button>
-                        <button id="navBackup" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="backup">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="registry">
+                            <i class="fas fa-edit mr-1"></i>Cadastros
+                        </button>
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="backup">
                             <i class="fas fa-database mr-1"></i>Backup
                         </button>
-                        <button id="navSettings" class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="settings">
+                        <button class="nav-btn p-2 rounded hover:bg-blue-700 transition-colors" data-page="settings">
                             <i class="fas fa-cog mr-1"></i>Configurações
                         </button>
                     </nav>
-                    
-                    <button id="themeToggle" class="p-2 rounded hover:bg-blue-700 transition-colors">
+                    <button id="themeToggle" class="p-2 rounded hover:bg-blue-700 transition-colors" aria-label="Toggle theme">
                         <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="mobileMenuToggle" class="md:hidden p-2 rounded hover:bg-blue-700 transition-colors" aria-label="Toggle mobile menu">
+                        <i class="fas fa-bars"></i>
                     </button>
                 </div>
             </div>
         </div>
-        
-        <!-- Mobile Navigation Menu -->
-        <div id="mobileMenu" class="md:hidden hidden bg-blue-700 border-t border-blue-600">
+        <div id="mobileMenu" class="md:hidden hidden bg-blue-700 border-t border-blue-600 dark:border-blue-700 shadow-lg">
             <nav class="container mx-auto px-4 py-2 space-y-1">
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="home">
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="home">
                     <i class="fas fa-home mr-2"></i>Início
                 </button>
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="conflicts">
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="conflicts">
                     <i class="fas fa-exclamation-triangle mr-2"></i>Conflitos
                 </button>
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="calendar">
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="calendar">
                     <i class="fas fa-calendar mr-2"></i>Calendário
                 </button>
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="stats">
+                 <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="stats">
                     <i class="fas fa-chart-bar mr-2"></i>Estatísticas
                 </button>
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="backup">
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="registry">
+                    <i class="fas fa-edit mr-2"></i>Cadastros
+                </button>
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="backup">
                     <i class="fas fa-database mr-2"></i>Backup
                 </button>
-                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 transition-colors rounded" data-page="settings">
+                <button class="nav-btn w-full text-left p-3 hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors rounded" data-page="settings">
                     <i class="fas fa-cog mr-2"></i>Configurações
                 </button>
             </nav>
@@ -197,19 +209,17 @@
     </header>
 
     <!-- Breadcrumb Navigation -->
-    <div id="breadcrumb" class="bg-white shadow-sm border-b no-print">
+    <div id="breadcrumbContainer" class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 no-print">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <nav class="flex items-center space-x-2 text-sm">
-                    <span id="breadcrumbPath" class="flex items-center">
-                        <!-- Breadcrumb items will be inserted here -->
-                    </span>
+                <nav id="breadcrumbPath" class="flex items-center space-x-2 text-sm" aria-label="breadcrumb">
+                    <!-- Breadcrumb items will be inserted here -->
                 </nav>
                 <div class="flex items-center space-x-2">
-                    <button id="backButton" class="hidden px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">
+                    <button id="backButton" class="hidden px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-xs sm:text-sm">
                         <i class="fas fa-arrow-left mr-1"></i>Voltar
                     </button>
-                    <button id="homeButtonSmall" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                    <button id="homeButtonSmall" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs sm:text-sm">
                         <i class="fas fa-home mr-1"></i>Início
                     </button>
                 </div>
@@ -221,41 +231,43 @@
     <main class="container mx-auto px-4 py-6">
         
         <!-- HOME PAGE -->
-        <div id="page-home" class="page-content page-transition">
+        <div id="page-home" class="page-content page-transition space-y-6">
             <!-- Toolbar -->
-            <div class="bg-white shadow-sm border-b rounded-lg mb-6 no-print">
-                <div class="px-6 py-4">
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div class="flex items-center space-x-4 flex-1 min-w-0"> <!-- Added min-w-0 for better wrapping -->
+            <div class="bg-white dark:bg-gray-800 shadow-md border-b dark:border-gray-700 rounded-lg no-print">
+                <div class="px-4 sm:px-6 py-4">
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-4 flex-1 min-w-0">
                             <div class="relative">
                                 <input type="text" id="searchInput" placeholder="Buscar operação..." 
-                                       class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                       class="pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 w-full sm:w-auto">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
-                            <select id="vtrFilter" class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="vtrFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 w-full sm:w-auto">
                                 <option value="">Todas as VTRs</option>
                             </select>
-                            <select id="statusFilter" class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="statusFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 w-full sm:w-auto">
                                 <option value="">Todos os Status</option>
                                 <option value="sem-conflito">Sem Conflito</option>
                                 <option value="com-conflito">Com Conflito</option>
                             </select>
                         </div>
-                        <div class="flex items-center space-x-2 flex-wrap gap-2"> <!-- Added flex-wrap and gap-2 -->
-                            <input type="date" id="dateFrom" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:[color-scheme:dark]">
-                            <span class="text-gray-500">até</span>
-                            <input type="date" id="dateTo" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:[color-scheme:dark]">
-                            <button id="clearFilters" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                                <i class="fas fa-eraser mr-2"></i>Limpar
+                         <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <input type="date" id="dateFromFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark] w-full sm:w-auto">
+                            <span class="text-gray-500 dark:text-gray-400 hidden sm:inline">até</span>
+                            <input type="date" id="dateToFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark] w-full sm:w-auto">
+                        </div>
+                        <div class="flex items-center space-x-2 flex-wrap gap-2">
+                            <button id="clearFiltersButton" class="px-3 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                                <i class="fas fa-eraser mr-1 sm:mr-2"></i>Limpar
                             </button>
-                            <button id="exportCsvButton" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
-                                <i class="fas fa-file-csv mr-2"></i>Exportar CSV
+                            <button id="exportCsvButton" class="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors text-sm">
+                                <i class="fas fa-file-csv mr-1 sm:mr-2"></i>CSV
                             </button>
-                            <button id="printButton" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                                <i class="fas fa-print mr-2"></i>Imprimir
+                            <button id="printButton" class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
+                                <i class="fas fa-print mr-1 sm:mr-2"></i>Imprimir
                             </button>
-                            <button id="addOperation" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Nova Operação
+                            <button id="addOperationButton" class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                                <i class="fas fa-plus mr-1 sm:mr-2"></i>Nova Operação
                             </button>
                         </div>
                     </div>
@@ -263,24 +275,23 @@
             </div>
 
             <!-- Operations Table -->
-            <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full print-table">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider no-print"></th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nome/Descrição</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Início</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Término</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">VTR</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Local</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Observações</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider no-print">Ações</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider no-print hidden sm:table-cell"></th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nome/Descrição</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Início</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Término</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">VTR</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Local</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Observações</th>
+                                <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider no-print">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="operationsTable" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                        <tbody id="operationsTableBody" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             <!-- Operations will be loaded here -->
                         </tbody>
                     </table>
@@ -289,175 +300,146 @@
         </div>
 
         <!-- CONFLICTS PAGE -->
-        <div id="page-conflicts" class="page-content hidden page-transition">
-            <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Resolução de Conflitos de Alocação de VTR</h2>
-                <div id="conflictsList" class="space-y-6">
-                    <!-- Conflicts will be listed here by JavaScript -->
-                </div>
+        <div id="page-conflicts" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Resolução de Conflitos de Alocação de VTR</h2>
+            <div id="conflictsListContainer" class="space-y-6">
+                <!-- Conflicts will be listed here -->
             </div>
         </div>
 
-
         <!-- CALENDAR PAGE -->
-        <div id="page-calendar" class="page-content hidden page-transition">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-bold mb-6">Calendário de Operações</h2>
-                <div id="calendar" class="grid grid-cols-7 gap-2">
-                    <!-- Calendar will be generated here -->
-                </div>
+        <div id="page-calendar" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button id="prevMonthButton" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 id="calendarMonthYear" class="text-xl sm:text-2xl font-bold text-center text-gray-800 dark:text-gray-100"></h2>
+                <button id="nextMonthButton" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-2">
+                <!-- Calendar will be generated here -->
             </div>
         </div>
 
         <!-- STATISTICS PAGE -->
-        <div id="page-stats" class="page-content hidden page-transition">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-bold mb-6">Estatísticas do Sistema</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-blue-50 p-6 rounded-lg">
-                        <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">Total de Operações</h3>
-                        <p id="totalOperations" class="text-4xl font-bold text-blue-600 dark:text-blue-400">0</p>
-                    </div>
-                    <div class="bg-green-50 p-6 rounded-lg">
-                        <h3 class="font-semibold text-green-800 dark:text-green-300 mb-2">Sem Conflitos</h3>
-                        <p id="noConflicts" class="text-4xl font-bold text-green-600 dark:text-green-400">0</p>
-                    </div>
-                    <div class="bg-red-50 p-6 rounded-lg">
-                        <h3 class="font-semibold text-red-800 dark:text-red-300 mb-2">Com Conflitos</h3>
-                        <p id="withConflicts" class="text-4xl font-bold text-red-600 dark:text-red-400">0</p>
-                    </div>
+        <div id="page-stats" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Estatísticas do Sistema</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-blue-50 dark:bg-blue-800/30 p-6 rounded-lg shadow">
+                    <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">Total de Operações</h3>
+                    <p id="statsTotalOperations" class="text-4xl font-bold text-blue-600 dark:text-blue-400">0</p>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">VTRs Mais Utilizadas</h3>
-                        <div id="vtrStats" class="space-y-3">
-                            <!-- VTR statistics will be shown here -->
+                <div class="bg-green-50 dark:bg-green-800/30 p-6 rounded-lg shadow">
+                    <h3 class="font-semibold text-green-800 dark:text-green-300 mb-2">Sem Conflitos</h3>
+                    <p id="statsNoConflicts" class="text-4xl font-bold text-green-600 dark:text-green-400">0</p>
+                </div>
+                <div class="bg-red-50 dark:bg-red-800/30 p-6 rounded-lg shadow">
+                    <h3 class="font-semibold text-red-800 dark:text-red-300 mb-2">Com Conflitos</h3>
+                    <p id="statsWithConflicts" class="text-4xl font-bold text-red-600 dark:text-red-400">0</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">VTRs Mais Utilizadas (Top 5)</h3>
+                    <div id="statsVtrUsage" class="space-y-3"></div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Operações por Nome (Top 5)</h3>
+                    <div id="statsOperationNames" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REGISTRY PAGE -->
+        <div id="page-registry" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Gerenciamento de Cadastros</h2>
+            <div class="space-y-8">
+                <div id="customVtrsSection" class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                     <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">VTRs Personalizadas</h3>
+                     <div class="space-y-3">
+                        <div>
+                            <label for="newVtrInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adicionar Nova VTR</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="newVtrInput" placeholder="Nome da VTR" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
+                                <button id="addVtrButton" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">Operações por Tipo/Nome</h3>
-                        <div id="operationTypeStats" class="space-y-3">
-                            <!-- Operation type statistics will be shown here -->
+                        <div id="customVtrsListContainer" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                     </div>
+                </div>
+                <div id="customLocationsSection" class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Locais Personalizados</h3>
+                     <div class="space-y-3">
+                        <div>
+                            <label for="newLocationInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adicionar Novo Local</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="newLocationInput" placeholder="Nome do Local" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
+                                <button id="addLocationButton" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
-                    </div>
+                        <div id="customLocationsListContainer" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                     </div>
                 </div>
             </div>
         </div>
 
         <!-- BACKUP PAGE -->
-        <div id="page-backup" class="page-content hidden page-transition">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-bold mb-6">Gerenciamento de Dados</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="border rounded-lg p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400">
-                            <i class="fas fa-download mr-2"></i>Backup dos Dados
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">Faça backup de todas as operações, VTRs e locais em um arquivo JSON.</p>
-                        <button id="exportData" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-download mr-2"></i>Baixar Backup
-                        </button>
-                    </div>
-                    <div class="border rounded-lg p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400">
-                            <i class="fas fa-upload mr-2"></i>Restaurar Dados
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">Restaure dados de um arquivo de backup anterior.</p>
-                        <button id="importData" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-upload mr-2"></i>Carregar Backup
-                        </button>
-                        <input type="file" id="fileInput" class="hidden" accept=".json">
-                    </div>
+        <div id="page-backup" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Gerenciamento de Dados</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400"><i class="fas fa-download mr-2"></i>Backup dos Dados</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Faça backup de todas as operações e configurações.</p>
+                    <button id="exportDataButton" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Baixar Backup
+                    </button>
                 </div>
-                <div class="mt-8 border-t pt-6 dark:border-gray-700">
-                    <div class="bg-red-50 dark:bg-red-800 dark:bg-opacity-30 border border-red-200 dark:border-red-700 rounded-lg p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-red-600 dark:text-red-400">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>Zona de Perigo
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">Esta ação removerá permanentemente todas as operações, VTRs e locais personalizados do sistema.</p>
-                        <button id="clearAllData" class="px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                            <i class="fas fa-trash mr-2"></i>Limpar Todos os Dados
-                        </button>
-                    </div>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400"><i class="fas fa-upload mr-2"></i>Restaurar Dados</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Restaure dados de um arquivo de backup JSON.</p>
+                    <button id="importDataButton" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-upload mr-2"></i>Carregar Backup
+                    </button>
+                    <input type="file" id="importFileInput" class="hidden" accept=".json">
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="bg-red-50 dark:bg-red-800/30 border border-red-200 dark:border-red-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-red-600 dark:text-red-400"><i class="fas fa-exclamation-triangle mr-2"></i>Zona de Perigo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Removerá permanentemente todas as operações e configurações personalizadas.</p>
+                    <button id="clearAllDataButton" class="px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        <i class="fas fa-trash mr-2"></i>Limpar Todos os Dados
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- SETTINGS PAGE -->
-        <div id="page-settings" class="page-content hidden page-transition">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-bold mb-6">Configurações do Sistema</h2>
-                <div class="space-y-6">
-                    <div class="border-b pb-6 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold mb-4">Aparência</h3>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <label class="font-medium">Modo Escuro</label>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Alterar entre tema claro e escuro</p>
-                            </div>
-                            <button id="themeToggleSettings" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">
-                                <i id="themeIcon" class="fas fa-moon mr-2"></i>
-                                <span id="themeText">Ativar Modo Escuro</span>
-                            </button>
+        <div id="page-settings" class="page-content hidden page-transition bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">Configurações do Sistema</h2>
+            <div class="space-y-8">
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Aparência</h3>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-medium text-gray-800 dark:text-gray-100">Modo Escuro</span>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Alterar entre tema claro e escuro.</p>
                         </div>
+                        <button id="themeToggleSettingsButton" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors text-gray-800 dark:text-gray-100">
+                            <i id="themeIconSettings" class="fas fa-moon mr-2"></i>
+                            <span id="themeTextSettings">Ativar Modo Escuro</span>
+                        </button>
                     </div>
-                    
-                    <div class="border-b pb-6 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold mb-4">VTRs Personalizadas</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adicionar Nova VTR</label>
-                                <div class="flex space-x-2">
-                                    <input type="text" id="newVtrInput" placeholder="Nome da VTR" class="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                                    <button id="addVtrButton" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="customVtrsList" class="space-y-2">
-                                <!-- Custom VTRs will be listed here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-b pb-6 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold mb-4">Locais de Operação Personalizados</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adicionar Novo Local</label>
-                                <div class="flex space-x-2">
-                                    <input type="text" id="newLocationInput" placeholder="Nome do Local (Ex: Praça Central)" class="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                                    <button id="addLocationButton" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="customLocationsList" class="space-y-2">
-                                <!-- Custom Locations will be listed here -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">Atalhos de Teclado</h3>
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span>Nova Operação:</span>
-                                <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Ctrl + N</kbd>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Voltar:</span>
-                                <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Esc</kbd>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Ir para Início:</span>
-                                <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Ctrl + H</kbd>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Buscar:</span>
-                                <kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Ctrl + F</kbd>
-                            </div>
-                        </div>
+                </div>
+                 <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Atalhos de Teclado</h3>
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <div class="flex justify-between"><span>Nova Operação (tela Início):</span><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Ctrl/Cmd + N</kbd></div>
+                        <div class="flex justify-between"><span>Buscar (tela Início):</span><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Ctrl/Cmd + F</kbd></div>
+                        <div class="flex justify-between"><span>Voltar (navegação):</span><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Esc (se não em modal)</kbd></div>
+                        <div class="flex justify-between"><span>Fechar Modal:</span><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs">Esc</kbd></div>
                     </div>
                 </div>
             </div>
@@ -467,62 +449,75 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-4 mt-8 no-print">
         <div class="container mx-auto px-4 text-center">
-            <p>&copy; <span id="currentYear"></span> Sistema de Gerenciamento de Frota - SPO-Lopes</p>
+            <p>&copy; 2024 Sistema de Gerenciamento de Frota - SGF. Desenvolvido para eficiência operacional.</p>
         </div>
     </footer>
 
     <!-- Operation Modal -->
-    <div id="operationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 no-print">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+    <div id="operationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-lg w-full mx-4 max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="modalTitle" class="text-xl font-bold">Nova Operação</h2>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <i class="fas fa-times text-xl"></i>
+                <h3 id="operationModalTitle" class="text-lg font-semibold text-gray-800 dark:text-gray-100">Nova Operação</h3>
+                <button id="closeOperationModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <form id="operationForm" class="space-y-4">
-                <input type="hidden" id="operationId">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome/Descrição da Operação</label>
-                        <input type="text" id="operationName" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                <input type="hidden" id="operationModalId">
+                
+                <div>
+                    <label for="operationModalName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome/Descrição da Operação</label>
+                    <input type="text" id="operationModalName" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="operationModalStartDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data de Início</label>
+                        <input type="date" id="operationModalStartDate" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark]">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data da Operação</label>
-                        <input type="date" id="operationDate" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:[color-scheme:dark]">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">VTR</label>
-                        <select id="operationVtr" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                            <option value="">Selecione uma VTR</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hora de Início</label>
-                        <input type="time" id="operationStartTime" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:[color-scheme:dark]">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hora de Término</label>
-                        <input type="time" id="operationEndTime" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:[color-scheme:dark]">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Local da Operação</label>
-                        <input type="text" id="operationLocation" list="locationSuggestions" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                        <datalist id="locationSuggestions">
-                            <!-- Options will be populated by JavaScript -->
-                        </datalist>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Observações</label>
-                        <textarea id="operationObservations" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"></textarea>
+                        <label for="operationModalStartTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Horário de Início</label>
+                        <input type="time" id="operationModalStartTime" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark]">
                     </div>
                 </div>
-                <div class="flex justify-end space-x-2 pt-4">
-                    <button type="button" id="cancelModal" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="operationModalEndDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data de Término</label>
+                        <input type="date" id="operationModalEndDate" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark]">
+                    </div>
+                    <div>
+                        <label for="operationModalEndTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Horário de Término</label>
+                        <input type="time" id="operationModalEndTime" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:[color-scheme:dark]">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="operationModalVtr" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">VTR</label>
+                    <select id="operationModalVtr" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
+                        <option value="">Selecione uma VTR</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="operationModalLocation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Local</label>
+                    <input type="text" id="operationModalLocation" required list="locationsList" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
+                    <datalist id="locationsList">
+                        <!-- Options will be populated by JavaScript -->
+                    </datalist>
+                </div>
+                
+                <div>
+                    <label for="operationModalObservations" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Observações</label>
+                    <textarea id="operationModalObservations" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelOperationModal" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         Cancelar
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        Salvar
+                        <i class="fas fa-save mr-2"></i>Salvar
                     </button>
                 </div>
             </form>
@@ -530,74 +525,122 @@
     </div>
 
     <script>
-        class FleetManagementSystem {
+        class FleetSystem {
             constructor() {
-                this.operations = [];
+                this.operations = this.loadFromStorage('fleetOperations', []);
+                this.customVtrs = this.loadFromStorage('fleetCustomVtrs', ['VTR-001', 'VTR-002', 'VTR-003', 'VTR-004', 'VTR-005']);
+                this.customLocations = this.loadFromStorage('fleetCustomLocations', ['Centro da Cidade', 'Zona Industrial', 'Aeroporto', 'Porto', 'Rodovia BR-101']);
                 this.currentPage = 'home';
                 this.navigationHistory = ['home'];
-                this.isDarkMode = false;
-                this.vtrs = [ // Default VTRs
-                    '1°PEL-VIATURA-9.6603',
-                    '2°PEL-VTR-9.6623',
-                    '4°PEL-VIATURA-9.6602',
-                    'MOTO-SERTÃO'
-                ];
-                this.customVtrs = []; // User-added VTRs
-                this.defaultLocations = [ // Default locations
-                    'RUA L, FEIRA X, FEIRA DE SANTANA,BAHIA',
-                    'RUA CRUZEIRO DO NORTE, CONCEIÇÃO, FEIRA DE SANTANA, BAHIA',
-                    'JARDIM CRUZEIRO, FEIRA DE SANTANA, BAHIA',
-                    'CAMPO LIMPO, FEIRA DE SANTANA, BAHIA',
-                    'RUA CRUZEIRO DO NORDESTE, CONCEIÇÃO, FEIRA DE SANTANA, BAHIA'
-                ];
-                this.customLocations = []; // User-added locations
-                
                 this.pageNames = {
-                    'home': 'Início',
-                    'conflicts': 'Conflitos',
-                    'calendar': 'Calendário',
-                    'stats': 'Estatísticas',
-                    'backup': 'Backup',
-                    'settings': 'Configurações'
+                    home: 'Início',
+                    conflicts: 'Conflitos',
+                    calendar: 'Calendário',
+                    stats: 'Estatísticas',
+                    registry: 'Cadastros',
+                    backup: 'Backup',
+                    settings: 'Configurações'
                 };
-                this.isDirty = false; // Track unsaved changes
-                
+                this.currentDisplayMonth = new Date().getMonth();
+                this.currentDisplayYear = new Date().getFullYear();
+                this.vtrColors = ['bg-blue-100 text-blue-800', 'bg-green-100 text-green-800', 'bg-yellow-100 text-yellow-800', 'bg-purple-100 text-purple-800', 'bg-pink-100 text-pink-800', 'bg-indigo-100 text-indigo-800'];
                 this.init();
             }
 
             init() {
-                this.loadData(); // Load operations
-                this.loadSettings(); // Load VTRs, Locations, Theme
-                this.setupEventListeners();
-                this.setupKeyboardShortcuts();
-                this.renderOperations();
+                this.initTheme();
+                this.initEventListeners();
+                this.showPage('home');
                 this.updateVtrDropdowns();
                 this.updateLocationDatalist();
-                this.setupDragAndDrop();
-                this.updateStatistics();
-                this.updateBreadcrumb();
-                this.updateNavigation();
-                document.getElementById('currentYear').textContent = new Date().getFullYear();
+                this.renderOperationsTable();
+                this.updateSettingsUI();
             }
 
-            setDirty(status = true) {
-                this.isDirty = status;
-            }
-
-            handleBeforeUnload(event) {
-                if (this.isDirty) {
-                    event.preventDefault(); 
-                    event.returnValue = 'Você tem alterações não salvas. Tem certeza que deseja sair? Considere fazer um backup.'; 
-                    return 'Você tem alterações não salvas. Tem certeza que deseja sair? Considere fazer um backup.';
+            // --- Data Management ---
+            loadFromStorage(key, defaultValue) {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : defaultValue;
+                } catch (e) {
+                    console.error(`Error loading ${key} from localStorage:`, e);
+                    return defaultValue;
                 }
             }
 
-            setupEventListeners() {
+            saveToStorage(key, data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                } catch (e) {
+                    console.error(`Error saving ${key} to localStorage:`, e);
+                }
+            }
+
+            saveData() {
+                this.saveToStorage('fleetOperations', this.operations);
+                this.saveToStorage('fleetCustomVtrs', this.customVtrs);
+                this.saveToStorage('fleetCustomLocations', this.customLocations);
+            }
+
+            generateId() {
+                return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+            }
+
+            // --- Theme Management ---
+            initTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                    this.updateThemeIcons(true);
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    this.updateThemeIcons(false);
+                }
+            }
+
+            toggleTheme() {
+                const isDark = document.documentElement.classList.contains('dark');
+                
+                if (isDark) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    this.updateThemeIcons(false);
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    this.updateThemeIcons(true);
+                }
+            }
+
+            updateThemeIcons(isDark) {
+                const mainIcon = document.getElementById('themeToggle').querySelector('i');
+                const settingsIcon = document.getElementById('themeIconSettings');
+                const settingsText = document.getElementById('themeTextSettings');
+                
+                if (isDark) {
+                    mainIcon.className = 'fas fa-sun';
+                    settingsIcon.className = 'fas fa-sun mr-2';
+                    settingsText.textContent = 'Desativar Modo Escuro';
+                } else {
+                    mainIcon.className = 'fas fa-moon';
+                    settingsIcon.className = 'fas fa-moon mr-2';
+                    settingsText.textContent = 'Ativar Modo Escuro';
+                }
+            }
+
+            // --- Event Listeners ---
+            initEventListeners() {
+                // Theme toggle
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('themeToggleSettingsButton').addEventListener('click', () => this.toggleTheme());
+
                 // Navigation
                 document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const page = e.currentTarget.getAttribute('data-page');
-                        this.showPage(page);
+                    btn.addEventListener('click', () => {
+                        this.showPage(btn.dataset.page);
+                        this.closeMobileMenu();
                     });
                 });
 
@@ -606,611 +649,296 @@
                 document.getElementById('backButton').addEventListener('click', () => this.goBack());
                 document.getElementById('mobileMenuToggle').addEventListener('click', () => this.toggleMobileMenu());
 
-                // Theme toggle
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
-                document.getElementById('themeToggleSettings').addEventListener('click', () => this.toggleTheme());
-                
-                // Data management
-                document.getElementById('exportData').addEventListener('click', () => this.exportData());
-                document.getElementById('importData').addEventListener('click', () => this.importData());
-                document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileImport(e));
-                document.getElementById('clearAllData').addEventListener('click', () => this.clearAllData());
-                
-                // VTR management
+                // Filters and search
+                ['searchInput', 'vtrFilter', 'statusFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', () => this.applyFiltersAndRender());
+                });
+                document.getElementById('clearFiltersButton').addEventListener('click', () => this.clearFilters());
+
+                // Action buttons
+                document.getElementById('addOperationButton').addEventListener('click', () => this.openOperationModal());
+                document.getElementById('exportCsvButton').addEventListener('click', () => this.exportCsv());
+                document.getElementById('printButton').addEventListener('click', () => window.print());
+
+                // Operation Modal
+                document.getElementById('closeOperationModal').addEventListener('click', () => this.closeOperationModal());
+                document.getElementById('cancelOperationModal').addEventListener('click', () => this.closeOperationModal());
+                document.getElementById('operationForm').addEventListener('submit', (e) => this.saveOperation(e));
+
+                // Calendar navigation
+                document.getElementById('prevMonthButton').addEventListener('click', () => this.changeMonth(-1));
+                document.getElementById('nextMonthButton').addEventListener('click', () => this.changeMonth(1));
+
+                // VTR and Location management
                 document.getElementById('addVtrButton').addEventListener('click', () => this.addCustomVtr());
                 document.getElementById('newVtrInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.addCustomVtr();
                 });
-
-                // Location management
                 document.getElementById('addLocationButton').addEventListener('click', () => this.addCustomLocation());
                 document.getElementById('newLocationInput').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.addCustomLocation();
                 });
-                
-                // Modal
-                document.getElementById('addOperation').addEventListener('click', () => this.openModal());
-                document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
-                document.getElementById('cancelModal').addEventListener('click', () => this.closeModal());
-                document.getElementById('operationForm').addEventListener('submit', (e) => this.saveOperation(e));
-                
-                // Filters & Actions
-                document.getElementById('searchInput').addEventListener('input', () => this.applyFilters());
-                document.getElementById('vtrFilter').addEventListener('change', () => this.applyFilters());
-                document.getElementById('statusFilter').addEventListener('change', () => this.applyFilters());
-                document.getElementById('dateFrom').addEventListener('change', () => this.applyFilters());
-                document.getElementById('dateTo').addEventListener('change', () => this.applyFilters());
-                document.getElementById('clearFilters').addEventListener('click', () => this.clearFilters());
-                document.getElementById('printButton').addEventListener('click', () => this.printTable());
-                document.getElementById('exportCsvButton').addEventListener('click', () => this.exportTableToCSV());
 
+                // Backup/Import
+                document.getElementById('exportDataButton').addEventListener('click', () => this.exportData());
+                document.getElementById('importDataButton').addEventListener('click', () => document.getElementById('importFileInput').click());
+                document.getElementById('importFileInput').addEventListener('change', (e) => this.importData(e));
+                document.getElementById('clearAllDataButton').addEventListener('click', () => this.clearAllData());
 
-                // Unsaved changes listener
-                window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
+                // Close modal when clicking outside
+                document.getElementById('operationModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) this.closeOperationModal();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
             }
 
-            setupKeyboardShortcuts() {
-                document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey || e.metaKey) {
-                        switch(e.key.toLowerCase()) { 
-                            case 'n':
-                                e.preventDefault();
-                                if (this.currentPage === 'home') this.openModal();
-                                break;
-                            case 'h':
-                                e.preventDefault();
-                                this.goToHome();
-                                break;
-                            case 'f':
-                                e.preventDefault();
-                                if (this.currentPage === 'home') {
-                                    document.getElementById('searchInput').focus();
-                                }
-                                break;
-                        }
-                    } else if (e.key === 'Escape') {
-                        if (document.getElementById('operationModal').classList.contains('flex')) {
-                            this.closeModal();
-                        } else if (this.currentPage !== 'home' && this.navigationHistory.length > 1) {
-                            this.goBack();
-                        }
+            handleKeyboardShortcuts(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    if (e.key === 'Escape' && document.getElementById('operationModal').classList.contains('flex')) {
+                        this.closeOperationModal();
                     }
-                });
+                    return;
+                }
+
+                if (e.key === 'Escape' && this.navigationHistory.length > 1) {
+                    e.preventDefault();
+                    this.goBack();
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'n' && this.currentPage === 'home') {
+                    e.preventDefault();
+                    this.openOperationModal();
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'f' && this.currentPage === 'home') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
             }
 
-            showPage(pageId) {
-                if (pageId === this.currentPage && document.getElementById(`page-${pageId}`) && !document.getElementById(`page-${pageId}`).classList.contains('hidden')) return;
+            // --- Navigation ---
+            showPage(pageId, addToHistory = true) {
+                if (addToHistory && pageId !== this.currentPage) {
+                    this.navigationHistory.push(pageId);
+                }
                 
-                document.querySelectorAll('.page-content').forEach(page => {
-                    page.classList.add('hidden');
-                });
+                document.querySelectorAll('.page-content').forEach(page => page.classList.add('hidden'));
                 
                 const targetPage = document.getElementById(`page-${pageId}`);
                 if (targetPage) {
                     targetPage.classList.remove('hidden');
-                    targetPage.classList.add('page-transition'); // Ensure animation class is present
-                    
-                    if (this.navigationHistory[this.navigationHistory.length - 1] !== pageId) {
-                        this.navigationHistory.push(pageId);
-                    }
-                    
                     this.currentPage = pageId;
                     this.updateBreadcrumb();
-                    this.updateNavigation();
-                    this.closeMobileMenu();
-                    
-                    this.loadPageContent(pageId);
+                    this.updateNavigationActiveState();
+                    this.loadPageSpecificContent(pageId);
                 }
             }
 
-            goToHome() {
-                this.navigationHistory = ['home']; 
-                this.showPage('home');
-            }
-
+            goToHome() { this.navigationHistory = ['home']; this.showPage('home', false); }
             goBack() {
                 if (this.navigationHistory.length > 1) {
-                    this.navigationHistory.pop(); 
-                    const previousPage = this.navigationHistory[this.navigationHistory.length - 1];
-                    this.currentPage = previousPage; 
-                    this.showPage(previousPage); 
+                    this.navigationHistory.pop();
+                    this.showPage(this.navigationHistory[this.navigationHistory.length - 1], false);
                 }
             }
-
-
-            loadPageContent(pageId) {
-                switch(pageId) {
-                    case 'calendar':
-                        this.renderCalendar();
-                        break;
-                    case 'stats':
-                        this.updateStatistics();
-                        break;
-                    case 'settings':
-                        this.updateSettingsPage();
-                        break;
-                    case 'conflicts':
-                        this.renderConflictsPage();
-                        break;
-                }
-            }
+            toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+            closeMobileMenu() { document.getElementById('mobileMenu').classList.add('hidden'); }
 
             updateBreadcrumb() {
-                const breadcrumbPath = document.getElementById('breadcrumbPath');
-                const backButton = document.getElementById('backButton');
+                const breadcrumbPathEl = document.getElementById('breadcrumbPath');
+                breadcrumbPathEl.innerHTML = this.navigationHistory.map((pageId, index) => {
+                    const pageName = this.pageNames[pageId] || pageId.charAt(0).toUpperCase() + pageId.slice(1);
+                    const isLast = index === this.navigationHistory.length - 1;
+                    return isLast ? `<span class="breadcrumb-item font-semibold text-blue-600 dark:text-blue-400">${pageName}</span>`
+                                  : `<button class="breadcrumb-item text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" data-page-index="${index}">${pageName}</button>`;
+                }).join('');
                 
-                let breadcrumbHTML = '';
-                this.navigationHistory.forEach((pageId, index) => {
-                    const pageName = this.pageNames[pageId] || pageId;
-                    if (index === this.navigationHistory.length - 1) {
-                        breadcrumbHTML += `<span class="breadcrumb-item font-semibold text-blue-600 dark:text-blue-400">${pageName}</span>`;
-                    } else {
-                        breadcrumbHTML += `<button class="breadcrumb-item text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" onclick="fleetSystem.navigateToBreadcrumb(${index})">${pageName}</button>`;
-                    }
+                breadcrumbPathEl.querySelectorAll('button[data-page-index]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const navIndex = parseInt(e.currentTarget.dataset.pageIndex);
+                        this.navigationHistory = this.navigationHistory.slice(0, navIndex + 1);
+                        this.showPage(this.navigationHistory[navIndex], false);
+                    });
                 });
-                
-                breadcrumbPath.innerHTML = breadcrumbHTML;
-                
-                backButton.classList.toggle('hidden', this.navigationHistory.length <= 1);
+                document.getElementById('backButton').classList.toggle('hidden', this.navigationHistory.length <= 1);
             }
-
-            navigateToBreadcrumb(index) {
-                this.navigationHistory = this.navigationHistory.slice(0, index + 1);
-                const targetPage = this.navigationHistory[index];
-                this.currentPage = targetPage; 
-                this.showPage(targetPage);
-            }
-
-            updateNavigation() {
+            
+            updateNavigationActiveState() {
                 document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.remove('nav-active');
-                    if (btn.getAttribute('data-page') === this.currentPage) {
-                        btn.classList.add('nav-active');
+                    btn.classList.remove('nav-active', 'bg-blue-700', 'md:bg-blue-600', 'dark:bg-blue-600', 'font-semibold');
+                    if (btn.dataset.page === this.currentPage) {
+                        btn.classList.add('nav-active', 'font-semibold');
+                        if(document.getElementById('desktopNav').contains(btn)) {
+                            btn.classList.add('bg-blue-700', 'dark:bg-blue-600');
+                        } else {
+                             btn.classList.add('bg-blue-600', 'dark:bg-blue-500');
+                        }
                     }
                 });
             }
-
-            toggleMobileMenu() {
-                document.getElementById('mobileMenu').classList.toggle('hidden');
-            }
-
-            closeMobileMenu() {
-                document.getElementById('mobileMenu').classList.add('hidden');
-            }
-
-            loadData() { 
-                const stored = localStorage.getItem('fleetOperations');
-                if (stored) {
-                    this.operations = JSON.parse(stored);
-                } else {
-                    this.operations = [
-                        {
-                            id: this.generateId(),
-                            name: 'SATURAÇÃO EXEMPLO',
-                            date: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0], // Tomorrow
-                            startTime: '12:00',
-                            endTime: '18:00',
-                            vtr: this.vtrs[0] || 'VTR_PADRAO_1',
-                            location: this.defaultLocations[0] || 'LOCAL_PADRAO_1',
-                            observations: 'Operação de exemplo.',
-                            order: 0
-                        }
-                    ];
-                    this.saveData(); 
-                }
-                this.setDirty(false); 
-            }
-
-            loadSettings() { 
-                const stored = localStorage.getItem('fleetSettings');
-                if (stored) {
-                    const settings = JSON.parse(stored);
-                    this.isDarkMode = settings.isDarkMode || false;
-                    this.customVtrs = settings.customVtrs || [];
-                    this.customLocations = settings.customLocations || [];
-                }
-                
-                document.documentElement.classList.toggle('dark', this.isDarkMode);
-                this.updateThemeButtons();
-                this.setDirty(false); 
-            }
-
-            saveData() { 
-                localStorage.setItem('fleetOperations', JSON.stringify(this.operations));
-                this.setDirty(true);
-            }
-
-            saveSettings() { 
-                const settings = {
-                    isDarkMode: this.isDarkMode,
-                    customVtrs: this.customVtrs,
-                    customLocations: this.customLocations,
-                };
-                localStorage.setItem('fleetSettings', JSON.stringify(settings));
-                this.setDirty(true);
-            }
-
-            generateId() {
-                return Date.now().toString(36) + Math.random().toString(36).substr(2);
-            }
-
-            toggleTheme() {
-                this.isDarkMode = !this.isDarkMode;
-                document.documentElement.classList.toggle('dark', this.isDarkMode);
-                this.updateThemeButtons();
-                this.saveSettings(); 
-            }
-
-            updateThemeButtons() {
-                const icon = document.querySelector('#themeToggle i');
-                const settingsIcon = document.getElementById('themeIcon');
-                const settingsText = document.getElementById('themeText');
-                
-                if (this.isDarkMode) {
-                    icon.className = 'fas fa-sun';
-                    if (settingsIcon) settingsIcon.className = 'fas fa-sun mr-2';
-                    if (settingsText) settingsText.textContent = 'Desativar Modo Escuro';
-                } else {
-                    icon.className = 'fas fa-moon';
-                    if (settingsIcon) settingsIcon.className = 'fas fa-moon mr-2';
-                    if (settingsText) settingsText.textContent = 'Ativar Modo Escuro';
+            
+            loadPageSpecificContent(pageId) {
+                switch(pageId) {
+                    case 'conflicts': this.renderConflictsPage(); break;
+                    case 'calendar': this.renderCalendar(); break;
+                    case 'stats': this.updateStatistics(); break;
+                    case 'registry': this.updateSettingsUI(); break;
+                    case 'settings': this.updateSettingsUI(); break;
+                    case 'home': this.applyFiltersAndRender(); break;
                 }
             }
-
-            exportData() {
-                const backupData = {
-                    operations: this.operations,
-                    settings: {
-                        isDarkMode: this.isDarkMode,
-                        customVtrs: this.customVtrs,
-                        customLocations: this.customLocations
-                    }
-                };
-                const dataStr = JSON.stringify(backupData, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `frota_backup_${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-                this.setDirty(false); 
-                alert('Backup realizado com sucesso!');
-            }
-
-            importData() {
-                document.getElementById('fileInput').click();
-            }
-
-            handleFileImport(e) {
-                const file = e.target.files[0];
-                if (file && file.type === 'application/json') {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        try {
-                            const data = JSON.parse(ev.target.result);
-                            if (confirm('Isso substituirá todos os dados atuais (operações, VTRs e locais personalizados). Continuar?')) {
-                                if (data.operations) this.operations = data.operations;
-                                if (data.settings) {
-                                    this.isDarkMode = data.settings.isDarkMode || false;
-                                    this.customVtrs = data.settings.customVtrs || [];
-                                    this.customLocations = data.settings.customLocations || [];
-                                }
-                                this.saveData();
-                                this.saveSettings();
-                                this.loadSettings(); 
-                                this.renderOperations();
-                                this.updateVtrDropdowns();
-                                this.updateLocationDatalist();
-                                this.updateStatistics();
-                                if (this.currentPage === 'conflicts') this.renderConflictsPage();
-                                this.setDirty(false); 
-                                alert('Dados importados com sucesso!');
-                            }
-                        } catch (error) {
-                            console.error("Erro ao importar:", error);
-                            alert('Erro ao importar arquivo. Verifique se é um arquivo JSON válido e no formato esperado.');
-                        }
-                    };
-                    reader.readAsText(file);
-                    e.target.value = null; 
-                }
-            }
-
-            clearAllData() {
-                if (confirm('ATENÇÃO: Isso removerá permanentemente TODAS as operações, VTRs e locais personalizados. Esta ação não pode ser desfeita. Continuar?')) {
-                    if (confirm('Tem certeza absoluta? Todos os dados serão perdidos!')) {
-                        this.operations = [];
-                        this.customVtrs = [];
-                        this.customLocations = [];
-                        this.saveData(); 
-                        this.saveSettings(); 
-                        
-                        this.renderOperations();
-                        this.updateVtrDropdowns();
-                        this.updateLocationDatalist();
-                        this.updateStatistics();
-                        this.updateSettingsPage(); 
-                        if (this.currentPage === 'conflicts') this.renderConflictsPage();
-                        this.setDirty(false); 
-                        alert('Todos os dados foram removidos.');
-                    }
-                }
-            }
-
-            addCustomVtr() {
-                const input = document.getElementById('newVtrInput');
-                const vtrName = input.value.trim().toUpperCase();
-                
-                if (vtrName && !this.getAllVtrs().includes(vtrName)) {
-                    this.customVtrs.push(vtrName);
-                    this.saveSettings();
-                    this.updateVtrDropdowns();
-                    this.updateCustomVtrsList();
-                    input.value = '';
-                } else if (this.getAllVtrs().includes(vtrName)) {
-                    alert('Esta VTR já existe!');
-                } else if (!vtrName) {
-                    alert('O nome da VTR não pode ser vazio.');
-                }
-            }
-
-            removeCustomVtr(vtrName) {
-                if (confirm(`Remover VTR "${vtrName}"? Se esta VTR estiver em uso em operações, será necessário atualizá-las.`)) {
-                    this.customVtrs = this.customVtrs.filter(vtr => vtr !== vtrName);
-                    this.saveSettings();
-                    this.updateVtrDropdowns();
-                    this.updateCustomVtrsList();
-                }
-            }
-
-            getAllVtrs() {
-                return [...new Set([...this.vtrs, ...this.customVtrs])].sort();
-            }
-
-            updateCustomVtrsList() {
-                const container = document.getElementById('customVtrsList');
-                if (!container) return;
-                
-                container.innerHTML = this.customVtrs.sort().map(vtr => `
-                    <div class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-600 rounded">
-                        <span>${vtr}</span>
-                        <button onclick="fleetSystem.removeCustomVtr('${vtr}')" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" title="Remover VTR">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-
-            addCustomLocation() {
-                const input = document.getElementById('newLocationInput');
-                const locationName = input.value.trim();
-                
-                if (locationName && !this.getAllLocations().map(l => l.toUpperCase()).includes(locationName.toUpperCase())) {
-                    this.customLocations.push(locationName);
-                    this.saveSettings();
-                    this.updateLocationDatalist();
-                    this.updateCustomLocationsList();
-                    input.value = '';
-                } else if (this.getAllLocations().map(l => l.toUpperCase()).includes(locationName.toUpperCase())) {
-                    alert('Este Local já existe!');
-                } else if (!locationName) {
-                     alert('O nome do Local não pode ser vazio.');
-                }
-            }
-
-            removeCustomLocation(locationName) {
-                if (confirm(`Remover Local "${locationName}"? Se este local estiver em uso em operações, será necessário atualizá-las.`)) {
-                    this.customLocations = this.customLocations.filter(loc => loc !== locationName);
-                    this.saveSettings();
-                    this.updateLocationDatalist();
-                    this.updateCustomLocationsList();
-                }
-            }
-
-            getAllLocations() { 
-                return [...new Set([...this.defaultLocations, ...this.customLocations])].sort();
-            }
-
-            updateCustomLocationsList() {
-                const container = document.getElementById('customLocationsList');
-                if (!container) return;
-                
-                container.innerHTML = this.customLocations.sort().map(loc => `
-                    <div class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-600 rounded">
-                        <span>${loc}</span>
-                        <button onclick="fleetSystem.removeCustomLocation('${loc}')" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" title="Remover Local">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-
-            updateLocationDatalist() {
-                const datalist = document.getElementById('locationSuggestions');
-                if (!datalist) return;
-                datalist.innerHTML = this.getAllLocations().map(loc => `<option value="${loc}"></option>`).join('');
-            }
-
-
-            updateSettingsPage() {
-                this.updateCustomVtrsList();
-                this.updateCustomLocationsList();
-                this.updateThemeButtons(); 
-            }
-
-            openModal(operation = null) {
-                const modal = document.getElementById('operationModal');
-                const title = document.getElementById('modalTitle');
+            
+            // --- Operation Modal ---
+            openOperationModal(opToEdit = null) {
                 const form = document.getElementById('operationForm');
-                
-                this.updateVtrDropdown(); 
-                this.updateLocationDatalist(); 
+                form.reset();
+                this.updateVtrDropdowns('operationModalVtr');
+                this.updateLocationDatalist();
 
-                if (operation) {
-                    title.textContent = 'Editar Operação';
-                    document.getElementById('operationId').value = operation.id;
-                    document.getElementById('operationName').value = operation.name;
-                    document.getElementById('operationDate').value = operation.date;
-                    document.getElementById('operationStartTime').value = operation.startTime;
-                    document.getElementById('operationEndTime').value = operation.endTime;
-                    document.getElementById('operationVtr').value = operation.vtr;
-                    document.getElementById('operationLocation').value = operation.location;
-                    document.getElementById('operationObservations').value = operation.observations;
+                const today = new Date().toISOString().split('T')[0];
+                if (opToEdit) {
+                    document.getElementById('operationModalTitle').textContent = 'Editar Operação';
+                    document.getElementById('operationModalId').value = opToEdit.id;
+                    document.getElementById('operationModalName').value = opToEdit.name;
+                    document.getElementById('operationModalStartDate').value = opToEdit.startDate;
+                    document.getElementById('operationModalStartTime').value = opToEdit.startTime;
+                    document.getElementById('operationModalEndDate').value = opToEdit.endDate;
+                    document.getElementById('operationModalEndTime').value = opToEdit.endTime;
+                    document.getElementById('operationModalVtr').value = opToEdit.vtr;
+                    document.getElementById('operationModalLocation').value = opToEdit.location;
+                    document.getElementById('operationModalObservations').value = opToEdit.observations;
                 } else {
-                    title.textContent = 'Nova Operação';
-                    form.reset();
-                    document.getElementById('operationId').value = '';
-                    document.getElementById('operationDate').value = new Date().toISOString().split('T')[0];
+                    document.getElementById('operationModalTitle').textContent = 'Nova Operação';
+                    document.getElementById('operationModalId').value = '';
+                    document.getElementById('operationModalStartDate').value = today;
+                    document.getElementById('operationModalStartTime').value = '09:00';
+                    document.getElementById('operationModalEndDate').value = today;
+                    document.getElementById('operationModalEndTime').value = '17:00';
                 }
-                
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.getElementById('operationName').focus(); 
+                document.getElementById('operationModal').classList.remove('hidden');
+                document.getElementById('operationModal').classList.add('flex');
+                document.getElementById('operationModalName').focus();
             }
 
-            closeModal() {
-                const modal = document.getElementById('operationModal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                 if (this.currentPage === 'conflicts') { // Refresh conflicts page after modal close
-                    this.renderConflictsPage();
-                }
+            closeOperationModal() {
+                document.getElementById('operationModal').classList.add('hidden');
+                document.getElementById('operationModal').classList.remove('flex');
+                if (this.currentPage === 'conflicts') this.renderConflictsPage();
             }
 
-            saveOperation(e) {
-                e.preventDefault();
-                
-                const id = document.getElementById('operationId').value;
-                const operationData = {
+            saveOperation(event) {
+                event.preventDefault();
+                const id = document.getElementById('operationModalId').value;
+                const newOpData = {
                     id: id || this.generateId(),
-                    name: document.getElementById('operationName').value.trim(),
-                    date: document.getElementById('operationDate').value,
-                    startTime: document.getElementById('operationStartTime').value,
-                    endTime: document.getElementById('operationEndTime').value,
-                    vtr: document.getElementById('operationVtr').value,
-                    location: document.getElementById('operationLocation').value.trim(),
-                    observations: document.getElementById('operationObservations').value.trim(),
-                    order: id ? (this.operations.find(op => op.id === id)?.order ?? this.operations.length) : (this.operations.length > 0 ? Math.max(...this.operations.map(op => op.order)) + 1 : 0)
+                    name: document.getElementById('operationModalName').value.trim(),
+                    startDate: document.getElementById('operationModalStartDate').value,
+                    startTime: document.getElementById('operationModalStartTime').value,
+                    endDate: document.getElementById('operationModalEndDate').value,
+                    endTime: document.getElementById('operationModalEndTime').value,
+                    vtr: document.getElementById('operationModalVtr').value,
+                    location: document.getElementById('operationModalLocation').value.trim(),
+                    observations: document.getElementById('operationModalObservations').value.trim(),
+                    order: id ? this.operations.find(op => op.id === id)?.order ?? this.operations.length 
+                               : (this.operations.length > 0 ? Math.max(...this.operations.map(op => op.order)) + 1 : 0)
                 };
 
-                if (!operationData.name || !operationData.date || !operationData.startTime || !operationData.endTime || !operationData.vtr || !operationData.location) {
-                    alert("Por favor, preencha todos os campos obrigatórios.");
-                    return;
+                if (!newOpData.name || !newOpData.startDate || !newOpData.startTime || !newOpData.endDate || !newOpData.endTime || !newOpData.vtr || !newOpData.location) {
+                    alert("Por favor, preencha todos os campos obrigatórios."); return;
                 }
-                if (operationData.endTime <= operationData.startTime) {
-                    alert("A hora de término deve ser posterior à hora de início.");
-                    return;
+                
+                const startDateTime = this.combineDateTime(newOpData.startDate, newOpData.startTime);
+                const endDateTime = this.combineDateTime(newOpData.endDate, newOpData.endTime);
+                if (endDateTime <= startDateTime) {
+                    alert("A data/hora de término deve ser posterior à data/hora de início."); return;
                 }
 
                 if (id) {
                     const index = this.operations.findIndex(op => op.id === id);
-                    this.operations[index] = operationData;
+                    if (index !== -1) this.operations[index] = newOpData;
                 } else {
-                    this.operations.push(operationData);
+                    this.operations.push(newOpData);
                 }
-
                 this.saveData();
-                this.renderOperations();
+                this.renderOperationsTable();
                 this.updateStatistics();
-                this.closeModal(); 
-            }
-
-            duplicateOperation(operationToDuplicate) {
-                const newOperation = {
-                    ...operationToDuplicate, // Spread existing operation
-                    id: '', // Clear ID for new operation, openModal will handle new ID if saved
-                    name: operationToDuplicate.name + ' (Cópia)',
-                    date: new Date().toISOString().split('T')[0], // Default to today
-                    startTime: operationToDuplicate.startTime, // Keep original times as a starting point
-                    endTime: operationToDuplicate.endTime,
-                    order: (this.operations.length > 0 ? Math.max(...this.operations.map(op => op.order)) + 1 : 0) // New order
-                };
-                this.openModal(newOperation); // Open modal with this pre-filled new operation
+                this.closeOperationModal();
+                if (this.currentPage === 'calendar') this.renderCalendar();
+                if (this.currentPage === 'conflicts') this.renderConflictsPage();
             }
 
             deleteOperation(id) {
                 if (confirm('Tem certeza que deseja excluir esta operação?')) {
                     this.operations = this.operations.filter(op => op.id !== id);
                     this.saveData();
-                    this.renderOperations();
+                    this.renderOperationsTable();
                     this.updateStatistics();
-                     if (this.currentPage === 'conflicts') {
-                        this.renderConflictsPage();
-                    }
+                    if (this.currentPage === 'calendar') this.renderCalendar();
+                    if (this.currentPage === 'conflicts') this.renderConflictsPage();
                 }
+            }
+            
+            duplicateOperation(opToDuplicateId) {
+                const op = this.operations.find(o => o.id === opToDuplicateId);
+                if (!op) return;
+                const newOpData = {
+                    ...op,
+                    id: '',
+                    name: `${op.name} (Cópia)`,
+                    order: (this.operations.length > 0 ? Math.max(...this.operations.map(o => o.order)) + 1 : 0)
+                };
+                this.openOperationModal(newOpData);
+            }
+
+            // --- Conflict Detection ---
+            combineDateTime(dateStr, timeStr) {
+                return new Date(`${dateStr}T${timeStr}`);
             }
 
             checkConflicts(operation) {
-                return this.operations.filter(op => 
-                    op.id !== operation.id &&
-                    op.vtr === operation.vtr &&
-                    op.date === operation.date &&
-                    this.timeOverlap(op.startTime, op.endTime, operation.startTime, operation.endTime)
-                );
-            }
+                if (!operation.startDate || !operation.startTime || !operation.endDate || !operation.endTime) return [];
+                const opStart = this.combineDateTime(operation.startDate, operation.startTime);
+                const opEnd = this.combineDateTime(operation.endDate, operation.endTime);
 
-            timeOverlap(start1, end1, start2, end2) {
-                if (!start1 || !end1 || !start2 || !end2) return false;
-                return start1 < end2 && start2 < end1;
+                return this.operations.filter(otherOp => {
+                    if (otherOp.id === operation.id || !otherOp.startDate || !otherOp.startTime || !otherOp.endDate || !otherOp.endTime) return false;
+                    if (otherOp.vtr !== operation.vtr) return false;
+                    
+                    const otherStart = this.combineDateTime(otherOp.startDate, otherOp.startTime);
+                    const otherEnd = this.combineDateTime(otherOp.endDate, otherOp.endTime);
+                    
+                    return opStart < otherEnd && otherStart < opEnd;
+                });
             }
-
-            renderOperations() {
-                const tbody = document.getElementById('operationsTable');
+            
+            // --- Rendering ---
+            renderOperationsTable() {
+                const tbody = document.getElementById('operationsTableBody');
                 const filteredOps = this.getFilteredOperations();
-                
+
                 if (filteredOps.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-gray-500 dark:text-gray-400">Nenhuma operação encontrada.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500 dark:text-gray-400">Nenhuma operação encontrada.</td></tr>`;
                     return;
                 }
-
-                tbody.innerHTML = filteredOps.map(operation => {
-                    const conflicts = this.checkConflicts(operation);
+                tbody.innerHTML = filteredOps.map(op => {
+                    const conflicts = this.checkConflicts(op);
                     const hasConflict = conflicts.length > 0;
-                    
+                    const vtrColor = this.getVtrColorClass(op.vtr);
                     return `
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 ${hasConflict ? 'conflict' : ''}" data-id="${operation.id}">
-                            <td class="px-4 py-3 no-print">
-                                <i class="fas fa-grip-vertical text-gray-400 dark:text-gray-500 cursor-grab" title="Arraste para reordenar"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 ${hasConflict ? 'bg-red-50 dark:bg-red-900/30 conflict-row' : ''}" data-id="${op.id}">
+                            <td class="px-2 py-3 text-center no-print hidden sm:table-cell"><i class="fas fa-grip-vertical text-gray-400 dark:text-gray-500 cursor-grab" title="Arraste"></i></td>
+                            <td class="px-3 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">${op.name}</td>
+                            <td class="px-3 py-3 text-sm text-gray-600 dark:text-gray-300">${this.formatDisplayDateTime(op.startDate, op.startTime)}</td>
+                            <td class="px-3 py-3 text-sm text-gray-600 dark:text-gray-300">${this.formatDisplayDateTime(op.endDate, op.endTime)}</td>
+                            <td class="px-3 py-3 text-sm text-gray-600 dark:text-gray-300"><span class="px-2 py-1 text-xs font-semibold rounded-full ${vtrColor}">${op.vtr}</span></td>
+                            <td class="px-3 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate" title="${op.location}">${op.location}</td>
+                            <td class="px-3 py-3 text-sm text-center">
+                                ${hasConflict ? `<div class="tooltip"><i class="fas fa-exclamation-triangle text-red-500 dark:text-red-400"></i><span class="tooltiptext">Conflito com: ${conflicts.map(c => c.name).join(', ')}</span></div>` : '<i class="fas fa-check-circle text-green-500 dark:text-green-400"></i>'}
                             </td>
-                            <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">${operation.name}</td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">${this.formatDate(operation.date)}</td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">${operation.startTime}</td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">${operation.endTime}</td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${this.getVtrColorClass(operation.vtr)}">
-                                    ${operation.vtr}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate" title="${operation.location}">
-                                ${operation.location}
-                            </td>
-                            <td class="px-4 py-3 text-sm text-center">
-                                ${hasConflict ? 
-                                    `<div class="tooltip">
-                                        <i class="fas fa-exclamation-triangle text-red-500 dark:text-red-400"></i>
-                                        <span class="tooltiptext">Conflito com: ${conflicts.map(c => `${c.name} (${c.startTime}-${c.endTime})`).join(', ')}</span>
-                                    </div>` : 
-                                    '<i class="fas fa-check-circle text-green-500 dark:text-green-400"></i>'
-                                }
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate" title="${operation.observations}">
-                                ${operation.observations || '-'}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-medium no-print">
+                            <td class="px-3 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate hidden md:table-cell" title="${op.observations}">${op.observations || '-'}</td>
+                            <td class="px-3 py-3 text-sm font-medium no-print">
                                 <div class="flex space-x-2">
-                                    <button onclick="fleetSystem.openModal(JSON.parse(JSON.stringify(fleetSystem.operations.find(op => op.id === '${operation.id}'))))" 
-                                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="fleetSystem.duplicateOperation(JSON.parse(JSON.stringify(fleetSystem.operations.find(op => op.id === '${operation.id}'))))"
-                                            class="text-yellow-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Duplicar">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                    <button onclick="fleetSystem.deleteOperation('${operation.id}')" 
-                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <button onclick="fleetSystem.openOperationModal(fleetSystem.operations.find(o => o.id === '${op.id}'))" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button onclick="fleetSystem.duplicateOperation('${op.id}')" class="text-yellow-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300" title="Duplicar"><i class="fas fa-copy"></i></button>
+                                    <button onclick="fleetSystem.deleteOperation('${op.id}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir"><i class="fas fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -1220,406 +948,445 @@
 
             getFilteredOperations() {
                 let filtered = [...this.operations];
-                
-                const search = document.getElementById('searchInput').value.toLowerCase();
-                const vtrFilterValue = document.getElementById('vtrFilter').value;
-                const statusFilterValue = document.getElementById('statusFilter').value;
-                const dateFromValue = document.getElementById('dateFrom').value;
-                const dateToValue = document.getElementById('dateTo').value;
-                
-                if (search) {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const vtr = document.getElementById('vtrFilter').value;
+                const status = document.getElementById('statusFilter').value;
+                const dateFrom = document.getElementById('dateFromFilter').value;
+                const dateTo = document.getElementById('dateToFilter').value;
+
+                if (searchTerm) {
                     filtered = filtered.filter(op => 
-                        op.name.toLowerCase().includes(search) ||
-                        op.location.toLowerCase().includes(search) ||
-                        op.vtr.toLowerCase().includes(search) ||
-                        op.observations.toLowerCase().includes(search)
+                        op.name.toLowerCase().includes(searchTerm) ||
+                        op.location.toLowerCase().includes(searchTerm) ||
+                        op.vtr.toLowerCase().includes(searchTerm) ||
+                        op.observations.toLowerCase().includes(searchTerm)
                     );
                 }
-                
-                if (vtrFilterValue) {
-                    filtered = filtered.filter(op => op.vtr === vtrFilterValue);
-                }
-                
-                if (statusFilterValue) {
+                if (vtr) filtered = filtered.filter(op => op.vtr === vtr);
+                if (status) {
                     filtered = filtered.filter(op => {
                         const hasConflict = this.checkConflicts(op).length > 0;
-                        return statusFilterValue === 'com-conflito' ? hasConflict : !hasConflict;
+                        return status === 'com-conflito' ? hasConflict : !hasConflict;
                     });
                 }
-                
-                if (dateFromValue) {
-                    filtered = filtered.filter(op => op.date >= dateFromValue);
+                if (dateFrom) {
+                    filtered = filtered.filter(op => op.endDate >= dateFrom);
                 }
-                
-                if (dateToValue) {
-                    filtered = filtered.filter(op => op.date <= dateToValue);
+                if (dateTo) {
+                    filtered = filtered.filter(op => op.startDate <= dateTo);
                 }
-                
-                return filtered.sort((a, b) => a.order - b.order);
+
+                filtered.sort((a, b) => {
+                    const dateA = this.combineDateTime(a.startDate, a.startTime);
+                    const dateB = this.combineDateTime(b.startDate, b.startTime);
+                    return dateB - dateA;
+                });
+
+                return filtered;
             }
 
-            applyFilters() {
-                if (this.currentPage === 'home') {
-                    this.renderOperations();
-                }
+            formatDisplayDateTime(dateStr, timeStr) {
+                const date = new Date(`${dateStr}T${timeStr}`);
+                return `${date.toLocaleDateString('pt-BR')} ${timeStr}`;
+            }
+
+            getVtrColorClass(vtr) {
+                const index = this.customVtrs.indexOf(vtr) % this.vtrColors.length;
+                return this.vtrColors[index] || this.vtrColors[0];
+            }
+
+            applyFiltersAndRender() {
+                this.renderOperationsTable();
             }
 
             clearFilters() {
-                document.getElementById('searchInput').value = '';
-                document.getElementById('vtrFilter').value = '';
-                document.getElementById('statusFilter').value = '';
-                document.getElementById('dateFrom').value = '';
-                document.getElementById('dateTo').value = '';
-                this.renderOperations();
+                ['searchInput', 'vtrFilter', 'statusFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+                this.renderOperationsTable();
             }
 
-            printTable() {
-                window.print();
-            }
-
-            escapeCSVValue(value) {
-                if (value == null) return '';
-                const stringValue = String(value);
-                if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n') || stringValue.includes('\r')) {
-                    return `"${stringValue.replace(/"/g, '""')}"`;
-                }
-                return stringValue;
-            }
-
-            exportTableToCSV() {
-                const operationsToExport = this.getFilteredOperations();
-                if (operationsToExport.length === 0) {
-                    alert("Nenhuma operação para exportar.");
-                    return;
-                }
-
-                const headers = [
-                    "Nome/Descrição", "Data", "Início", "Término",
-                    "VTR", "Local", "Status Conflito", "Observações"
-                ];
+            // --- VTR and Location Management ---
+            updateVtrDropdowns(selectId = 'vtrFilter') {
+                const select = document.getElementById(selectId);
+                if (!select) return;
                 
-                const csvRows = [
-                    headers.join(','), 
-                    ...operationsToExport.map(op => {
-                        const conflictsDetails = this.checkConflicts(op);
-                        const statusConflict = conflictsDetails.length > 0 
-                            ? `Com Conflito: ${conflictsDetails.map(c => c.name).join('; ')}` 
-                            : "Sem Conflito";
-                        return [
-                            this.escapeCSVValue(op.name),
-                            this.escapeCSVValue(this.formatDate(op.date)),
-                            this.escapeCSVValue(op.startTime),
-                            this.escapeCSVValue(op.endTime),
-                            this.escapeCSVValue(op.vtr),
-                            this.escapeCSVValue(op.location),
-                            this.escapeCSVValue(statusConflict),
-                            this.escapeCSVValue(op.observations)
-                        ].join(',');
-                    })
-                ];
-
-                const csvString = csvRows.join('\n');
-                const blob = new Blob(["\uFEFF" + csvString], { type: 'text/csv;charset=utf-8;' }); // Added BOM for Excel
-                const link = document.createElement("a");
+                const currentValue = select.value;
+                const isFilter = selectId === 'vtrFilter';
                 
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", `operacoes_frota_${new Date().toISOString().split('T')[0]}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-                alert("Dados exportados para CSV com sucesso!");
-            }
-
-
-            formatDate(dateStr) {
-                if (!dateStr) return '';
-                const parts = dateStr.split('-');
-                const date = new Date(parts[0], parts[1] - 1, parts[2]);
-                return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' }); 
-            }
-
-            getVtrColorClass(vtr) { 
-                let hash = 0;
-                for (let i = 0; i < vtr.length; i++) {
-                    hash = vtr.charCodeAt(i) + ((hash << 5) - hash);
-                }
-                const colorIndex = Math.abs(hash % 5); 
+                select.innerHTML = isFilter ? '<option value="">Todas as VTRs</option>' : '<option value="">Selecione uma VTR</option>';
                 
-                const vtrColorClasses = [
-                    'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200',
-                    'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200',
-                    'bg-purple-100 text-purple-800 dark:bg-purple-700 dark:text-purple-200',
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200', // Changed orange to yellow
-                    'bg-pink-100 text-pink-800 dark:bg-pink-700 dark:text-pink-200',
-                ];
-                const defaultVtrColors = {
-                    '1°PEL-VIATURA-9.6603': 'bg-sky-100 text-sky-800 dark:bg-sky-700 dark:text-sky-200',
-                    '2°PEL-VTR-9.6623': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-700 dark:text-emerald-200',
-                    '4°PEL-VIATURA-9.6602': 'bg-violet-100 text-violet-800 dark:bg-violet-700 dark:text-violet-200',
-                    'MOTO-SERTÃO': 'bg-amber-100 text-amber-800 dark:bg-amber-700 dark:text-amber-200'
-                };
-
-                return defaultVtrColors[vtr] || vtrColorClasses[colorIndex];
-            }
-
-
-            updateVtrDropdowns() { 
-                const allVtrs = this.getAllVtrs();
-                const filterSelect = document.getElementById('vtrFilter');
-                const currentFilterValue = filterSelect.value; 
+                this.customVtrs.forEach(vtr => {
+                    const option = document.createElement('option');
+                    option.value = vtr;
+                    option.textContent = vtr;
+                    select.appendChild(option);
+                });
                 
-                filterSelect.innerHTML = '<option value="">Todas as VTRs</option>' +
-                    allVtrs.map(vtr => `<option value="${vtr}">${vtr}</option>`).join('');
-                
-                if (allVtrs.includes(currentFilterValue)) {
-                    filterSelect.value = currentFilterValue;
-                } else {
-                    filterSelect.value = ""; 
+                if (currentValue && this.customVtrs.includes(currentValue)) {
+                    select.value = currentValue;
                 }
             }
 
-            updateVtrDropdown() { 
-                const select = document.getElementById('operationVtr');
-                const allVtrs = this.getAllVtrs();
-                const currentValue = select.value; 
+            updateLocationDatalist() {
+                const datalist = document.getElementById('locationsList');
+                if (!datalist) return;
                 
-                select.innerHTML = '<option value="">Selecione uma VTR</option>' +
-                    allVtrs.map(vtr => `<option value="${vtr}">${vtr}</option>`).join('');
-
-                if (allVtrs.includes(currentValue)) {
-                     select.value = currentValue;
-                } else {
-                    select.value = ""; 
-                }
-            }
-
-            setupDragAndDrop() {
-                const tbody = document.getElementById('operationsTable');
-                Sortable.create(tbody, {
-                    handle: '.fa-grip-vertical',
-                    ghostClass: 'sortable-ghost',
-                    animation: 150,
-                    onEnd: (evt) => {
-                        const idOrderInTable = Array.from(tbody.children).map(row => row.dataset.id);
-                        
-                        // Create a map of operations for quick lookup
-                        const operationMap = new Map(this.operations.map(op => [op.id, op]));
-                        
-                        // Create a new sorted list based on the visual order in the table
-                        const reorderedOperations = [];
-                        idOrderInTable.forEach(id => {
-                            if (operationMap.has(id)) {
-                                reorderedOperations.push(operationMap.get(id));
-                            }
-                        });
-
-                        // Add back any operations that were filtered out, maintaining their original relative order at the end
-                        this.operations.forEach(op => {
-                            if (!idOrderInTable.includes(op.id)) {
-                                reorderedOperations.push(op);
-                            }
-                        });
-                        
-                        // Re-assign 'order' property based on the new full list order
-                        reorderedOperations.forEach((op, index) => {
-                            op.order = index;
-                        });
-
-                        this.operations = reorderedOperations; // Update the main operations array
-                        this.saveData();
-                        this.renderOperations(); // Re-render to ensure consistency if any complex filtering was involved
-                    }
+                datalist.innerHTML = '';
+                this.customLocations.forEach(location => {
+                    const option = document.createElement('option');
+                    option.value = location;
+                    datalist.appendChild(option);
                 });
             }
 
+            addCustomVtr() {
+                const input = document.getElementById('newVtrInput');
+                const vtr = input.value.trim();
+                
+                if (vtr && !this.customVtrs.includes(vtr)) {
+                    this.customVtrs.push(vtr);
+                    input.value = '';
+                    this.updateVtrDropdowns();
+                    this.updateVtrDropdowns('operationModalVtr');
+                    this.updateSettingsUI();
+                    this.saveData();
+                }
+            }
+
+            removeCustomVtr(vtr) {
+                if (confirm(`Remover VTR "${vtr}"? Esta ação não pode ser desfeita.`)) {
+                    this.customVtrs = this.customVtrs.filter(v => v !== vtr);
+                    this.updateVtrDropdowns();
+                    this.updateVtrDropdowns('operationModalVtr');
+                    this.updateSettingsUI();
+                    this.saveData();
+                }
+            }
+
+            addCustomLocation() {
+                const input = document.getElementById('newLocationInput');
+                const location = input.value.trim();
+                
+                if (location && !this.customLocations.includes(location)) {
+                    this.customLocations.push(location);
+                    input.value = '';
+                    this.updateLocationDatalist();
+                    this.updateSettingsUI();
+                    this.saveData();
+                }
+            }
+
+            removeCustomLocation(location) {
+                if (confirm(`Remover local "${location}"? Esta ação não pode ser desfeita.`)) {
+                    this.customLocations = this.customLocations.filter(l => l !== location);
+                    this.updateLocationDatalist();
+                    this.updateSettingsUI();
+                    this.saveData();
+                }
+            }
+
+            updateSettingsUI() {
+                this.renderCustomVtrsList();
+                this.renderCustomLocationsList();
+            }
+
+            renderCustomVtrsList() {
+                const container = document.getElementById('customVtrsListContainer');
+                if (!container) return;
+                
+                container.innerHTML = this.customVtrs.map(vtr => `
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <span class="text-gray-800 dark:text-gray-200">${vtr}</span>
+                        <button onclick="fleetSystem.removeCustomVtr('${vtr}')" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            renderCustomLocationsList() {
+                const container = document.getElementById('customLocationsListContainer');
+                if (!container) return;
+                
+                container.innerHTML = this.customLocations.map(location => `
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <span class="text-gray-800 dark:text-gray-200">${location}</span>
+                        <button onclick="fleetSystem.removeCustomLocation('${location}')" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // --- Conflicts Page ---
             renderConflictsPage() {
-                const conflictsListDiv = document.getElementById('conflictsList');
-                if (!conflictsListDiv) return;
-
-                const allConflictGroups = new Map(); // Key: "vtr-date", Value: { vtr, date, operations: [op1, op2,...] }
-
-                this.operations.forEach(op => {
-                    const conflictingOps = this.checkConflicts(op);
-                    if (conflictingOps.length > 0) {
-                        const involvedOps = [op, ...conflictingOps].sort((a,b) => a.startTime.localeCompare(b.startTime));
-                        // Normalize by finding the earliest start and latest end time of the conflict group for display
-                        const earliestStart = involvedOps.reduce((min, o) => o.startTime < min ? o.startTime : min, '23:59');
-                        const latestEnd = involvedOps.reduce((max, o) => o.endTime > max ? o.endTime : max, '00:00');
-
-                        const groupKey = `${op.vtr}-${op.date}-${earliestStart}-${latestEnd}`; // More specific key
-
-                        if (!allConflictGroups.has(groupKey)) {
-                            allConflictGroups.set(groupKey, {
-                                vtr: op.vtr,
-                                date: op.date,
-                                startTime: earliestStart,
-                                endTime: latestEnd,
-                                operations: new Set() // Use Set to avoid duplicates if op is checked multiple times
-                            });
+                const container = document.getElementById('conflictsListContainer');
+                const conflictGroups = {};
+                
+                this.operations.forEach(operation => {
+                    const conflicts = this.checkConflicts(operation);
+                    if (conflicts.length > 0) {
+                        const key = `${operation.vtr}-${operation.startDate}`;
+                        if (!conflictGroups[key]) {
+                            conflictGroups[key] = new Set();
                         }
-                        const group = allConflictGroups.get(groupKey);
-                        involvedOps.forEach(involvedOp => group.operations.add(involvedOp));
+                        conflictGroups[key].add(operation);
+                        conflicts.forEach(conflict => conflictGroups[key].add(conflict));
                     }
                 });
                 
-                if (allConflictGroups.size === 0) {
-                    conflictsListDiv.innerHTML = '<p class="text-gray-600 dark:text-gray-400">Nenhum conflito de VTR encontrado.</p>';
+                if (Object.keys(conflictGroups).length === 0) {
+                    container.innerHTML = '<div class="text-center py-8"><i class="fas fa-check-circle text-green-500 text-4xl mb-4"></i><p class="text-lg text-green-600 dark:text-green-400">Nenhum conflito detectado!</p></div>';
                     return;
                 }
-
-                let html = '';
-                for (const [key, group] of allConflictGroups) {
-                    const uniqueOperations = Array.from(group.operations).sort((a,b) => a.startTime.localeCompare(b.startTime));
-                    if (uniqueOperations.length < 2) continue; // Skip if somehow a group ended up with less than 2 ops
-
-                    html += `
-                        <div class="mb-6 p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
-                            <h3 class="text-lg font-semibold mb-3 text-red-600 dark:text-red-400">
-                                <i class="fas fa-exclamation-circle mr-2"></i>Conflito em ${this.formatDate(group.date)} para VTR: 
-                                <span class="px-2 py-1 text-sm font-semibold rounded-full ${this.getVtrColorClass(group.vtr)}">${group.vtr}</span>
+                
+                container.innerHTML = Object.entries(conflictGroups).map(([key, operationsSet]) => {
+                    const operations = Array.from(operationsSet);
+                    const [vtr, date] = key.split('-');
+                    const formattedDate = new Date(date).toLocaleDateString('pt-BR');
+                    
+                    return `
+                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg p-6">
+                            <h3 class="font-semibold text-red-800 dark:text-red-200 mb-4 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Conflito: ${vtr} - ${formattedDate}
                             </h3>
-                            <div class="space-y-2">`;
-                    
-                    uniqueOperations.forEach(confOp => {
-                        html += `
-                                <div class="flex flex-wrap items-center justify-between p-3 border-b dark:border-gray-600 last:border-b-0">
-                                    <div class="flex-1 min-w-0">
-                                        <p class="font-medium text-gray-800 dark:text-gray-100 truncate" title="${confOp.name}">${confOp.name}</p>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                                            Horário: ${confOp.startTime} - ${confOp.endTime} | Local: <span class="truncate" title="${confOp.location}">${confOp.location}</span>
-                                        </p>
+                            <div class="space-y-3">
+                                ${operations.map(op => `
+                                    <div class="bg-white dark:bg-gray-800 border rounded-lg p-4">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="font-medium text-gray-900 dark:text-gray-100">${op.name}</h4>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">${this.formatDisplayDateTime(op.startDate, op.startTime)} - ${this.formatDisplayDateTime(op.endDate, op.endTime)}</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-500">Local: ${op.location}</p>
+                                                ${op.observations ? `<p class="text-sm text-gray-500 dark:text-gray-500 mt-1">${op.observations}</p>` : ''}
+                                            </div>
+                                            <button onclick="fleetSystem.openOperationModal(fleetSystem.operations.find(o => o.id === '${op.id}'))" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button onclick="fleetSystem.openModal(JSON.parse(JSON.stringify(fleetSystem.operations.find(op => op.id === '${confOp.id}'))))"
-                                            class="ml-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
-                                        <i class="fas fa-edit mr-1"></i>Editar
-                                    </button>
-                                </div>`;
-                    });
-                    html += `</div></div>`;
-                }
-                conflictsListDiv.innerHTML = html || '<p class="text-gray-600 dark:text-gray-400">Nenhum conflito de VTR encontrado após agrupamento.</p>'; // Fallback
-            }
-
-
-            renderCalendar() {
-                const calendarEl = document.getElementById('calendar');
-                if (!calendarEl) return;
-
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth(); 
-
-                const firstDayOfMonth = new Date(year, month, 1);
-                const lastDayOfMonth = new Date(year, month + 1, 0);
-                
-                const daysInMonth = lastDayOfMonth.getDate();
-                const startingDayOfWeek = firstDayOfMonth.getDay(); 
-
-                let calendarHTML = `<div class="text-center font-bold col-span-7 mb-4 text-xl">
-                    ${new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase()}
-                    </div>`;
-                
-                const dayHeaders = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-                dayHeaders.forEach(day => {
-                    calendarHTML += `<div class="text-center font-semibold p-2 md:p-3 bg-gray-100 dark:bg-gray-700 rounded">${day}</div>`;
-                });
-                
-                for (let i = 0; i < startingDayOfWeek; i++) {
-                    calendarHTML += '<div></div>'; 
-                }
-                
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const currentDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const dayOperations = this.operations.filter(op => op.date === currentDateStr);
-                    
-                    let dayClasses = "border-2 p-2 md:p-3 h-24 md:h-28 rounded-lg hover:shadow-md transition-shadow overflow-hidden ";
-                    if (dayOperations.length > 0) {
-                        dayClasses += "bg-blue-50 dark:bg-blue-800 border-blue-200 dark:border-blue-600";
-                    } else {
-                        dayClasses += "border-gray-200 dark:border-gray-600";
-                    }
-                    if (year === new Date().getFullYear() && month === new Date().getMonth() && day === new Date().getDate()){
-                        dayClasses += " ring-2 ring-blue-500"; 
-                    }
-
-                    calendarHTML += `
-                        <div class="${dayClasses}">
-                            <div class="font-semibold text-lg mb-1">${day}</div>
-                            <div class="text-xs space-y-1">
-                                ${dayOperations.slice(0, 2).map(op => 
-                                    `<div class="truncate bg-blue-100 dark:bg-blue-700 dark:text-blue-200 text-blue-700 px-1 rounded" title="${op.name} (${op.vtr})">${op.name}</div>`
-                                ).join('')}
-                                ${dayOperations.length > 2 ? `<div class="text-gray-500 dark:text-gray-400 text-xs">+${dayOperations.length - 2} mais</div>` : ''}
+                                `).join('')}
                             </div>
                         </div>
                     `;
-                }
-                calendarEl.innerHTML = calendarHTML;
+                }).join('');
             }
 
-            updateStatistics() {
-                const total = this.operations.length;
-                const withConflictsCount = this.operations.filter(op => this.checkConflicts(op).length > 0).length;
-                const noConflictsCount = total - withConflictsCount;
+            // --- Calendar ---
+            renderCalendar() {
+                const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                                   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
                 
-                document.getElementById('totalOperations').textContent = total;
-                document.getElementById('noConflicts').textContent = noConflictsCount;
-                document.getElementById('withConflicts').textContent = withConflictsCount;
+                document.getElementById('calendarMonthYear').textContent = `${monthNames[this.currentDisplayMonth]} ${this.currentDisplayYear}`;
                 
-                const vtrCounts = {};
-                this.operations.forEach(op => {
-                    vtrCounts[op.vtr] = (vtrCounts[op.vtr] || 0) + 1;
+                const firstDayOfMonth = new Date(this.currentDisplayYear, this.currentDisplayMonth, 1).getDay();
+                const daysInMonth = new Date(this.currentDisplayYear, this.currentDisplayMonth + 1, 0).getDate();
+                
+                const grid = document.getElementById('calendarGrid');
+                grid.innerHTML = '';
+                
+                // Header days
+                dayNames.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'text-center font-semibold text-gray-600 dark:text-gray-400 py-2 text-sm';
+                    dayHeader.textContent = day;
+                    grid.appendChild(dayHeader);
                 });
                 
-                const sortedVtrs = Object.entries(vtrCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5); 
-                
-                const vtrStatsDiv = document.getElementById('vtrStats');
-                if (vtrStatsDiv) {
-                    if (sortedVtrs.length > 0) {
-                        vtrStatsDiv.innerHTML = sortedVtrs.map(([vtr, count]) => `
-                            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
-                                <span class="font-medium">${vtr}</span>
-                                <span class="text-lg font-bold text-blue-600 dark:text-blue-400">${count}</span>
-                            </div>
-                        `).join('');
-                    } else {
-                        vtrStatsDiv.innerHTML = `<p class="text-gray-500 dark:text-gray-400">Nenhuma VTR utilizada ainda.</p>`;
-                    }
+                // Empty cells for days before month starts
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'p-2';
+                    grid.appendChild(emptyDay);
                 }
+                
+                // Days of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'border border-gray-200 dark:border-gray-700 p-2 min-h-24 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors';
+                    
+                    const dateStr = `${this.currentDisplayYear}-${String(this.currentDisplayMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayOperations = this.operations.filter(op => op.startDate <= dateStr && op.endDate >= dateStr);
+                    
+                    dayCell.innerHTML = `
+                        <div class="font-semibold text-sm mb-1">${day}</div>
+                        ${dayOperations.slice(0, 3).map(op => {
+                            const conflicts = this.checkConflicts(op);
+                            const hasConflict = conflicts.length > 0;
+                            return `<div class="text-xs p-1 mb-1 rounded ${hasConflict ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200'}" title="${op.name} - ${op.vtr}">${op.name.substring(0, 15)}${op.name.length > 15 ? '...' : ''}</div>`;
+                        }).join('')}
+                        ${dayOperations.length > 3 ? `<div class="text-xs text-gray-500 dark:text-gray-400">+${dayOperations.length - 3} mais</div>` : ''}
+                    `;
+                    
+                    grid.appendChild(dayCell);
+                }
+            }
 
-                const operationNameCounts = {};
+            changeMonth(direction) {
+                this.currentDisplayMonth += direction;
+                if (this.currentDisplayMonth < 0) {
+                    this.currentDisplayMonth = 11;
+                    this.currentDisplayYear--;
+                } else if (this.currentDisplayMonth > 11) {
+                    this.currentDisplayMonth = 0;
+                    this.currentDisplayYear++;
+                }
+                this.renderCalendar();
+            }
+
+            // --- Statistics ---
+            updateStatistics() {
+                const totalOps = this.operations.length;
+                const withConflicts = this.operations.filter(op => this.checkConflicts(op).length > 0).length;
+                const withoutConflicts = totalOps - withConflicts;
+                
+                document.getElementById('statsTotalOperations').textContent = totalOps;
+                document.getElementById('statsNoConflicts').textContent = withoutConflicts;
+                document.getElementById('statsWithConflicts').textContent = withConflicts;
+                
+                // VTR usage statistics
+                const vtrUsage = {};
                 this.operations.forEach(op => {
-                    const nameKey = op.name.trim().toUpperCase() || "Sem Nome";
-                    operationNameCounts[nameKey] = (operationNameCounts[nameKey] || 0) + 1;
+                    vtrUsage[op.vtr] = (vtrUsage[op.vtr] || 0) + 1;
                 });
                 
-                const sortedTypes = Object.entries(operationNameCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5); 
+                const topVtrs = Object.entries(vtrUsage)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 5);
                 
-                const typeStatsDiv = document.getElementById('operationTypeStats');
-                if (typeStatsDiv) {
-                     if (sortedTypes.length > 0) {
-                        typeStatsDiv.innerHTML = sortedTypes.map(([type, count]) => `
-                            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
-                                <span class="font-medium">${type}</span>
-                                <span class="text-lg font-bold text-green-600 dark:text-green-400">${count}</span>
-                            </div>
-                        `).join('');
-                    } else {
-                        typeStatsDiv.innerHTML = `<p class="text-gray-500 dark:text-gray-400">Nenhuma operação registrada.</p>`;
+                document.getElementById('statsVtrUsage').innerHTML = topVtrs.map(([vtr, count]) => `
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <span class="font-medium">${vtr}</span>
+                        <span class="bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200 px-2 py-1 rounded">${count}</span>
+                    </div>
+                `).join('') || '<p class="text-gray-500 dark:text-gray-400">Nenhum dado disponível</p>';
+                
+                // Operation name statistics
+                const nameUsage = {};
+                this.operations.forEach(op => {
+                    nameUsage[op.name] = (nameUsage[op.name] || 0) + 1;
+                });
+                
+                const topNames = Object.entries(nameUsage)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 5);
+                
+                document.getElementById('statsOperationNames').innerHTML = topNames.map(([name, count]) => `
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <span class="font-medium truncate mr-2" title="${name}">${name.length > 20 ? name.substring(0, 20) + '...' : name}</span>
+                        <span class="bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200 px-2 py-1 rounded">${count}</span>
+                    </div>
+                `).join('') || '<p class="text-gray-500 dark:text-gray-400">Nenhum dado disponível</p>';
+            }
+
+            // --- Data Export/Import ---
+            exportCsv() {
+                const headers = ['Nome/Descrição', 'Data Início', 'Hora Início', 'Data Término', 'Hora Término', 'VTR', 'Local', 'Status', 'Observações'];
+                
+                const csvContent = [
+                    headers.join(','),
+                    ...this.operations.map(op => {
+                        const hasConflicts = this.checkConflicts(op).length > 0;
+                        return [
+                            `"${op.name.replace(/"/g, '""')}"`,
+                            op.startDate,
+                            op.startTime,
+                            op.endDate,
+                            op.endTime,
+                            op.vtr,
+                            `"${op.location.replace(/"/g, '""')}"`,
+                            hasConflicts ? 'Com Conflito' : 'Sem Conflito',
+                            `"${(op.observations || '').replace(/"/g, '""')}"`
+                        ].join(',');
+                    })
+                ].join('\n');
+                
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `operacoes_frota_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+            }
+
+            exportData() {
+                const data = {
+                    operations: this.operations,
+                    customVtrs: this.customVtrs,
+                    customLocations: this.customLocations,
+                    exportDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `backup_frota_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            }
+
+            importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (data.operations && data.customVtrs && data.customLocations) {
+                            if (confirm('Esta ação irá substituir todos os dados atuais. Deseja continuar?')) {
+                                this.operations = data.operations;
+                                this.customVtrs = data.customVtrs;
+                                this.customLocations = data.customLocations;
+                                
+                                this.saveData();
+                                this.updateVtrDropdowns();
+                                this.updateVtrDropdowns('operationModalVtr');
+                                this.updateLocationDatalist();
+                                this.renderOperationsTable();
+                                this.updateStatistics();
+                                this.updateSettingsUI();
+                                
+                                alert('Dados restaurados com sucesso!');
+                                event.target.value = '';
+                            }
+                        } else {
+                            alert('Arquivo de backup inválido.');
+                        }
+                    } catch (error) {
+                        alert('Erro ao ler o arquivo de backup.');
+                    }
+                };
+                
+                reader.readAsText(file);
+            }
+
+            clearAllData() {
+                if (confirm('Esta ação irá apagar TODOS os dados permanentemente. Deseja continuar?')) {
+                    if (confirm('Tem CERTEZA? Esta ação não pode ser desfeita!')) {
+                        this.operations = [];
+                        this.customVtrs = ['VTR-001', 'VTR-002', 'VTR-003', 'VTR-004', 'VTR-005'];
+                        this.customLocations = ['Centro da Cidade', 'Zona Industrial', 'Aeroporto', 'Porto', 'Rodovia BR-101'];
+                        
+                        this.saveData();
+                        this.updateVtrDropdowns();
+                        this.updateVtrDropdowns('operationModalVtr');
+                        this.updateLocationDatalist();
+                        this.renderOperationsTable();
+                        this.updateStatistics();
+                        this.updateSettingsUI();
+                        
+                        alert('Todos os dados foram apagados.');
                     }
                 }
             }
         }
 
-        const fleetSystem = new FleetManagementSystem();
+        // Initialize the system
+        const fleetSystem = new FleetSystem();
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
